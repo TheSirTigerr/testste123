@@ -16,7 +16,7 @@ maxPlayers: 20
 # webAllowRestart: true
 
 startMinecraft: true # false to disable
-minecraftCommand: "java -Xms1000M -Xmx3000M -jar paper-1.21.jar nogui" # or paper.jar or whatever flavor you like
+minecraftCommand: "java -Xms1000M -Xmx3000M -jar paper-1.20.4.jar nogui" # or paper.jar or whatever flavor you like
 # minecraftAutostart: true
 # restartDelay: 200
 
