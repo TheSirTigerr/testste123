@@ -1,0 +1,106 @@
+<script>
+    const REFRESH_INTERVAL = 2000;
+    let dynmapLink = './dynmap';
+
+    startClick = () => {
+        console.log('WakeUp');
+        $.post('./wakeup', {})
+            .done((sucess) => { console.log('WakeUp Sucess', sucess); })
+            .fail((error) => { console.log('WakeUp Error', error); })
+    };
+
+    restartClick = () => {
+        console.log('Restart');
+        $.post('./restart', {})
+            .done((sucess) => { console.log('Restart Sucess', sucess); })
+            .fail((error) => { console.log('Restart Error', error); })
+    };
+
+    getTexts = (status) => {
+        let emoji = '🟥'
+        let buttonText = 'Wake Up';
+        switch (status) {
+            case 'Running':
+                emoji = '🟩'
+                buttonText = 'Sleep'
+                break;
+            case 'Sleeping':
+                emoji = '💤'
+                break;
+            case 'Starting':
+                emoji = '🟧'
+                buttonText = '...Waiting...'
+                break;
+        }
+        return { emoji, buttonText };
+    };
+
+    getStatus = () => {
+        $.get('./status')
+            .done(
+                (value) => {
+                    console.log(`${new Date().toISOString()} - getStatus`, value);
+
+                    const { status, dynmap, settings } = value;
+                    const { emoji, buttonText } = getTexts(status)
+                    $('#server-status').text(`${emoji} ${status} ${emoji}`);
+                    
+                    const displayWakeBtn = (settings.preventStop && status === "Running") ? 'none' : 'unset';
+                    $('#wakeup-button').text(buttonText);
+                    $('#wakeup-button').css('display', displayWakeBtn);
+
+                    const displayRestart = (settings.webAllowRestart && status === "Running") ? 'unset' : 'none';
+                    $('#restart-button').css('display', displayRestart);
+
+                    const displayDynmap = dynmap ? 'unset' : 'none';
+                    $('#dynmap-button').css('display', displayDynmap);
+                    dynmapLink = typeof dynmap === 'string' && dynmap.includes("http") ? dynmap : './dynmap';
+                })
+            .fail(
+                (error) => {
+                    $('#server-status').text('🛑 Offline 🛑');
+                })
+    };
+
+
+    homeLoaded = () => {
+        console.log("HomeLoaded");
+
+        getStatus();
+
+        setTimeout(() => {
+            $('#dynmap-button').click(() => {
+                window.open(dynmapLink, '_blank')
+            });
+        }, 50);
+
+        setTimeout(() => {
+            setInterval(getStatus, REFRESH_INTERVAL);
+        }, REFRESH_INTERVAL);
+    }
+    homeLoaded();
+</script>
+
+
+<div class="homeContainer">
+    <div>
+        <img alt="FavIcon" class="imageContainer" src={{favIcon}}>
+    </div>
+    <div class="homeCenter">
+        <div>
+            <div>{{{ motd }}}</div>
+            <div id="server-status" style="text-align: center;">🛑 Offline 🛑</div>
+        </div>
+    </div>
+    <div class="buttonContainer">
+        <button id="wakeup-button" class="button secondary actionButton" onclick=" startClick() ">
+            Wake Up
+        </button>
+        <button id="restart-button" class="button secondary actionButton" style="display: none;" onclick=" restartClick() ">
+            Restart
+        </button>
+        <button id="dynmap-button" class="button secondary actionButton" target="_blank" style="display: none;">
+            Dynmap
+        </button>
+    </div>
+</div>
