@@ -1,11 +1,11 @@
 # settings for SleepingServerStarter
 
-serverName: "SleepingServer, waiting for his prince..."
+serverName: SleepingServer, waiting for his prince...
 # serverMOTD: "SleepingServer, waiting for his prince... [MOTD]" # The server name to display in Minecraft, defaults to serverName if not set
 
 serverPort: 25565
 # bedrockPort: 19132
-loginMessage: "...Waking server up, come back in a minute..."
+loginMessage: ...Waking server up, come back in a minute...
 serverOnlineMode: true # like in the server.properties, to check the licence of player or not.
 maxPlayers: 20
 # useNativeFiles: true
